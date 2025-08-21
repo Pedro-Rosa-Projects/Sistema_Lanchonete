@@ -2,6 +2,7 @@ from flask import Flask
 from routes.budget_page import budget_page
 from routes.index_page import index_page
 from routes.stock_page import stock_page
+from routes.sales_page import sales_page
 
 
 def create_app():
@@ -12,6 +13,7 @@ def create_app():
     app.register_blueprint(index_page)
     app.register_blueprint(budget_page)
     app.register_blueprint(stock_page)
+    app.register_blueprint(sales_page)
 
     return app
 
