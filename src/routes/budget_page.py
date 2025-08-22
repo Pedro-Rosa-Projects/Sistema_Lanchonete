@@ -1,6 +1,6 @@
 from flask import Flask, Blueprint, render_template, url_for
 import mysql.connector
-from config import SQL_CREDENTIALS
+from src.config import SQL_CREDENTIALS
 
 budget_page = Blueprint('budget_page', __name__)
 
