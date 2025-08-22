@@ -7,7 +7,7 @@ from src.routes.sales_page import sales_page
 
 def create_app():
     app = Flask(
-        __name__, template_folder="src/front/templates", static_folder="src/front/statics"
+        __name__, template_folder="front/templates", static_folder="front/statics"
     )
 
     app.register_blueprint(index_page)
