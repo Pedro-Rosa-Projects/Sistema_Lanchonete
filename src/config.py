@@ -1,6 +1,8 @@
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
+
 class SQL_CREDENTIALS:
     DBUSER = os.getenv('DBUSER')
     DBPASS = os.getenv('DBPASS')

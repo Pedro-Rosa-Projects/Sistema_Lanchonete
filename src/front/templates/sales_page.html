@@ -22,17 +22,25 @@
             <main class="lg:col-span-2">
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                     
-                    <div class="product-card bg-white rounded-lg shadow-md p-4 flex flex-col items-center" data-id="1" data-name="Coxinha" data-price="8">
+                    {% for produto in lista_de_produtos %}
+
+                    <div class="product-card bg-white rounded-lg shadow-md p-4 flex flex-col items-center" data-id="1" data-name="{{ produto.nome }}" data-price="8">
                         <img src="{{ url_for('static', filename='images/coxinha.jpg')}}" alt="Café" class="w-32 h-32 object-cover rounded-full mb-4">
-                        <h3 class="text-xl font-semibold text-gray-700">Coxinha</h3>
-                        <p class="text-lg text-gray-500 mb-4">R$ 8</p>
+                        <h3 class="text-xl font-semibold text-gray-700">{{ produto.nome }}</h3>
+                        <p class="text-lg text-gray-500 mb-4">R$ {{ produto.preco_venda }}</p>
+                        <p class="text-lg text-gray-500 mb-4">Qtd. estoque: {{ produto.estoque }}</p>
                         <div class="flex items-center space-x-4">
                             <button class="quantity-btn decrease bg-red-500 text-white w-8 h-8 rounded-full font-bold text-lg">-</button>
                             <span class="quantity text-2xl font-bold">0</span>
                             <button class="quantity-btn increase bg-green-500 text-white w-8 h-8 rounded-full font-bold text-lg">+</button>
                         </div>
                     </div>
+
+                    {% endfor %}
             </main>
+
+
+
 
             <aside class="bg-white p-6 rounded-lg shadow-lg h-fit">
                 <h2 class="text-2xl font-bold border-b pb-4 mb-4">Resumo da Venda</h2>
