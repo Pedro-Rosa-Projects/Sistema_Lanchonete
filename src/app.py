@@ -1,8 +1,8 @@
 from flask import Flask
-from routes.budget_page import budget_page
-from routes.index_page import index_page
-from routes.stock_page import stock_page
-from routes.sales_page import sales_page
+from src.routes.budget_page import budget_page
+from src.routes.index_page import index_page
+from src.routes.stock_page import stock_page
+from src.routes.sales_page import sales_page
 
 
 def create_app():
