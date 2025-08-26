@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Estoque</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- jQuery + DataTables -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <!-- DataTables Tailwind Theme -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.tailwindcss.css">
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.tailwindcss.js"></script>
+
+    <style>
+        /* 🔹 Customização para escuro */
+        .dataTables_wrapper {
+            color: #e5e7eb; /* text-gray-200 */
+        }
+
+        .dataTables_filter input {
+            @apply bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500;
+        }
+
+        .dataTables_length select {
+            @apply bg-gray-700 border border-gray-600 text-gray-200 rounded-lg px-2 py-1;
+        }
+
+        .dataTables_paginate .paginate_button {
+            @apply bg-gray-700 text-gray-300 border border-gray-600 rounded-md px-2 py-1 mx-1 transition-colors;
+        }
+
+        .dataTables_paginate .paginate_button.current {
+            @apply bg-blue-600 text-white border-blue-600;
+        }
+
+        .dataTables_paginate .paginate_button:hover {
+            @apply bg-gray-600 text-white;
+        }
+
+        table.dataTable tbody tr {
+            @apply hover:bg-gray-700/50 transition-colors;
+        }
+    </style>
+</head>
+
+
+<body class="bg-gray-900 text-gray-200 font-sans">
+    
+
+    <div class="container mx-auto p-4 md:p-8">
+
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-white">Estoque</h1>
+            <p class="text-gray-400"></p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex items-center">
+                <div class="bg-blue-600/20 p-3 rounded-full">
+                    <svg class="w-6 h-6 text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M8.25 6.75h7.5M8.25 12h7.5m-7.5 5.25h7.5M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-400">Total de Itens Cadastrados</p>
+                    <p class="text-2xl font-bold text-white">0</p>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex items-center">
+                <div class="bg-green-600/20 p-3 rounded-full">
+                    <svg class="w-6 h-6 text-green-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.826-2.257-2.283-2.257-4.171 0-1.933 1.566-3.5 3.5-3.5s3.5 1.567 3.5 3.5c0 1.888-1.151 3.345-2.257 4.171Z" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-400">Valor do Estoque</p>
+                    <p class="text-2xl font-bold text-white">R$ 0</p>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex items-center">
+                <div class="bg-yellow-600/20 p-3 rounded-full">
+                    <svg class="w-6 h-6 text-yellow-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-400">Qtd. produtos com Estoque Baixo</p>
+                    <p class="text-2xl font-bold text-white">0</p>
+                </div>
+            </div>
+
+            <div class="bg-gray-800 p-6 rounded-lg shadow-lg flex items-center">
+                <div class="bg-red-600/20 p-3 rounded-full">
+                    <svg class="w-6 h-6 text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-400">Fora de Estoque</p>
+                    <p class="text-2xl font-bold text-white">0</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-gray-800 rounded-lg shadow-lg p-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-4 gap-4">
+                <div class="relative w-full md:w-auto md:flex-grow">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                    </span>
+                    <input type="text" placeholder="Buscar produto por nome..."
+                        class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                    <button
+                        class="w-full sm:w-auto bg-gray-600 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition duration-300">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z" />
+                        </svg>
+                        Criar Categoria
+                    </button>
+                    <button
+                        class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg flex items-center justify-center transition duration-300">
+                        <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Adicionar Produto
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table id="tabelaProdutos" class="w-full text-left">
+                    <thead class="bg-gray-700/50">
+                        <tr>
+                            <th class="p-4 font-semibold text-sm text-gray-300 uppercase tracking-wider">Produto</th>
+                            <th class="p-4 font-semibold text-sm text-gray-300 uppercase tracking-wider">Categoria</th>
+                            <th class="p-4 font-semibold text-sm text-gray-300 uppercase tracking-wider text-center">
+                                Quantidade</th>
+                            <th class="p-4 font-semibold text-sm text-gray-300 uppercase tracking-wider">Preço Unit.
+                            </th>
+                            <th class="p-4 font-semibold text-sm text-gray-300 uppercase tracking-wider text-center">
+                                Status</th>
+                            <th class="p-4 font-semibold text-sm text-gray-300 uppercase tracking-wider text-center">
+                                Ações</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    $(document).ready(function () {
+        $('#tabelaProdutos').DataTable({
+            ajax: '/stock/data',
+            responsive: true,
+            language: {
+                url: "https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json"
+            },
+            columns: [
+                { data: 'nome' },
+                { data: 'id_categoria' },
+                { data: 'qtd_estoque' },
+                {
+                    data: 'preco_venda',
+                    render: function (data) {
+                        return "R$ " + data.toFixed(2).replace('.', ',');
+                    }
+                },
+                {
+                    data: 'qtd_estoque',
+                    render: function (qtd) {
+                        if (qtd === 0) {
+                            return '<span class="bg-red-500/20 text-red-400 text-xs font-semibold px-2 py-1 rounded-full">Fora de Estoque</span>';
+                        } else if (qtd < 10) {
+                            return '<span class="bg-yellow-500/20 text-yellow-400 text-xs font-semibold px-2 py-1 rounded-full">Baixo</span>';
+                        } else {
+                            return '<span class="bg-green-500/20 text-green-400 text-xs font-semibold px-2 py-1 rounded-full">Em Estoque</span>';
+                        }
+                    }
+                },
+                {
+                    data: 'id',
+                    render: function (id) {
+                        return `
+                      <button class="text-blue-400 hover:text-blue-300 mr-2">Editar</button>
+                      <button class="text-red-400 hover:text-red-300">Excluir</button>
+                  `;
+                    }
+                }
+            ]
+        });
+    });
+</script>
