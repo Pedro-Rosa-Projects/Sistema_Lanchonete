@@ -12,7 +12,7 @@ supabase: Client = create_client(url, key)
 sales_page = Blueprint('sales_page', __name__)
 
 @sales_page.route('/sales')
-def teste():
+def list_products():
     page_title = "Fazenda - Início"
     try:
         response = supabase.table('produto').select("*").execute()
