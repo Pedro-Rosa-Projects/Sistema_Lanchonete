@@ -57,14 +57,14 @@ def register_sale():
         for product_id, item_details in cart_items.items():
             
             # Busca o estoque atual
-            produto_atual = supabase.table('produto').select('estoque').eq('id', int(product_id)).single().execute()
-            estoque_atual = produto_atual.data['estoque']
+            produto_atual = supabase.table('produto').select('qtd_estoque').eq('id', int(product_id)).single().execute()
+            estoque_atual = produto_atual.data['qtd_estoque']
             
             # Calcula o novo estoque
             novo_estoque = estoque_atual - item_details['quantity']
 
             # Atualiza o produto com o novo estoque
-            supabase.table('produto').update({'estoque': novo_estoque}).eq('id', int(product_id)).execute()
+            supabase.table('produto').update({'qtd_estoque': novo_estoque}).eq('id', int(product_id)).execute()
 
         return jsonify({'status': 'success', 'message': 'Venda registrada com sucesso!', 'venda_id': new_venda_id})
 
