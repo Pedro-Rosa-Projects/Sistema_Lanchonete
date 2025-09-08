@@ -7,6 +7,8 @@
     <title>Página de Vendas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="shortcut icon" href="{{url_for('static', filename='images/icone_branco.png')}}" type="image/x-icon">
+
 </head>
 
 <body class="bg-gray-100">
@@ -46,9 +48,6 @@
                     {% endfor %}
             </main>
 
-
-
-
             <aside class="bg-white p-6 rounded-lg shadow-lg h-fit">
                 <h2 class="text-2xl font-bold border-b pb-4 mb-4">Resumo da Venda</h2>
                 <div id="cart-items" class="space-y-2">
@@ -80,7 +79,7 @@
             const totalPriceEl = document.getElementById('total-price');
             const registerSaleBtn = document.getElementById('register-sale-btn');
 
-            let cart = {}; // Objeto para armazenar os produtos e suas quantidades
+            let cart = {};
 
             productCards.forEach(card => {
                 const increaseBtn = card.querySelector('.increase');
@@ -112,7 +111,7 @@
                 if (quantity > 0) {
                     cart[id] = { name, price, quantity };
                 } else {
-                    delete cart[id]; // Remove o produto se a quantidade for 0
+                    delete cart[id];
                 }
                 renderCart();
             }

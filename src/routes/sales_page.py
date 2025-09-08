@@ -13,9 +13,11 @@ sales_page = Blueprint('sales_page', __name__)
 
 @sales_page.route('/sales')
 def list_products():
+
     page_title = "Fazenda - Início"
+
     try:
-        response = supabase.table('produto').select("*").execute()
+        response = supabase.table('produto').select("*").order('nome', desc=False).execute()
         dados = response.data
         return render_template("sales_page.html", page_title = page_title, lista_de_produtos = dados)
     except Exception as e:
@@ -56,14 +58,11 @@ def register_sale():
 
         for product_id, item_details in cart_items.items():
             
-            # Busca o estoque atual
             produto_atual = supabase.table('produto').select('qtd_estoque').eq('id', int(product_id)).single().execute()
             estoque_atual = produto_atual.data['qtd_estoque']
             
-            # Calcula o novo estoque
             novo_estoque = estoque_atual - item_details['quantity']
 
-            # Atualiza o produto com o novo estoque
             supabase.table('produto').update({'qtd_estoque': novo_estoque}).eq('id', int(product_id)).execute()
 
         return jsonify({'status': 'success', 'message': 'Venda registrada com sucesso!', 'venda_id': new_venda_id})
