@@ -1,6 +1,4 @@
 from flask import Flask, Blueprint, render_template, url_for
-import mysql.connector
-from src.config import SQL_CREDENTIALS
 
 index_page = Blueprint('index_page', __name__)
 
