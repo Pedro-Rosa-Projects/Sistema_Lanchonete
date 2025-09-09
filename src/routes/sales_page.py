@@ -1,5 +1,5 @@
 import os
-from flask import Flask, Blueprint, render_template, url_for, request, jsonify
+from flask import Flask, Blueprint, render_template, url_for, request, jsonify, flash
 from supabase import create_client, Client
 from dotenv import load_dotenv
 
@@ -65,6 +65,7 @@ def register_sale():
 
             supabase.table('produto').update({'qtd_estoque': novo_estoque}).eq('id', int(product_id)).execute()
 
+        flash('Venda registrada com sucesso!', 'success')
         return jsonify({'status': 'success', 'message': 'Venda registrada com sucesso!', 'venda_id': new_venda_id})
 
     except Exception as e:

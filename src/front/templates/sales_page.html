@@ -8,7 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="shortcut icon" href="{{url_for('static', filename='images/icone_branco.png')}}" type="image/x-icon">
-
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style_sales_page.css')}}">
 </head>
 
 <body class="bg-gray-100">
@@ -22,24 +22,25 @@
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <main class="lg:col-span-2">
-                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <main class="lg:col-span-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
 
                     {% for produto in lista_de_produtos %}
 
                     <div class="product-card bg-white rounded-lg shadow-md p-4 flex flex-col items-center"
                         data-id="{{ produto.id }}" data-name="{{ produto.nome }}"
-                        data-price="{{ produto.preco_venda }}">
+                        data-price="{{ produto.preco_venda }}" data-stock="{{ produto.qtd_estoque }}">
                         <img src="{{ url_for('static', filename=produto.url_image)}}" alt="{{ produto.name }}"
                             class="w-32 h-32 object-cover rounded-full mb-4">
                         <h3 class="text-xl font-semibold text-gray-700">{{ produto.nome }}</h3>
                         <p class="text-lg text-gray-500 mb-4">R$ {{ produto.preco_venda }}</p>
                         <p class="text-lg text-gray-500 mb-4">Qtd. estoque: {{ produto.qtd_estoque }}</p>
-                        <div class="flex items-center space-x-4">
+                        <div class="flex items-center">
                             <button
                                 class="quantity-btn decrease bg-red-500 text-white w-8 h-8 rounded-full font-bold text-lg">-</button>
-                            <span class="quantity text-2xl font-bold">0</span>
+                            <input type="number" value="0" min="0"
+                                class="quantity-input mx-2 w-16 text-center bg-transparent text-2xl font-bold focus:outline-none">
                             <button
                                 class="quantity-btn increase bg-green-500 text-white w-8 h-8 rounded-full font-bold text-lg">+</button>
                         </div>
@@ -68,137 +69,34 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Define a data atual no campo de data
-            const dateInput = document.getElementById('sale-date');
-            dateInput.valueAsDate = new Date();
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2"></div>
 
-            const productCards = document.querySelectorAll('.product-card');
-            const cartItemsContainer = document.getElementById('cart-items');
-            const totalPriceEl = document.getElementById('total-price');
-            const registerSaleBtn = document.getElementById('register-sale-btn');
+    <template id="toast-template">
+        <div class="toast-message flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow" role="alert">
+            <div class="icon-container inline-flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg">
+                </div>
+            <div class="message-container ms-3 text-sm font-normal"></div>
+            <button type="button" class="ms-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8" aria-label="Close">
+                <span class="sr-only">Close</span>
+                <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                </svg>
+            </button>
+        </div>
+    </template>
 
-            let cart = {};
+    <div id="flash-messages" style="display: none;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div data-category="{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
 
-            productCards.forEach(card => {
-                const increaseBtn = card.querySelector('.increase');
-                const decreaseBtn = card.querySelector('.decrease');
-                const quantityEl = card.querySelector('.quantity');
-
-                const productId = card.dataset.id;
-                const productName = card.dataset.name;
-                const productPrice = parseFloat(card.dataset.price);
-
-                increaseBtn.addEventListener('click', () => {
-                    let quantity = parseInt(quantityEl.textContent);
-                    quantity++;
-                    quantityEl.textContent = quantity;
-                    updateCart(productId, productName, productPrice, quantity);
-                });
-
-                decreaseBtn.addEventListener('click', () => {
-                    let quantity = parseInt(quantityEl.textContent);
-                    if (quantity > 0) {
-                        quantity--;
-                        quantityEl.textContent = quantity;
-                        updateCart(productId, productName, productPrice, quantity);
-                    }
-                });
-            });
-
-            function updateCart(id, name, price, quantity) {
-                if (quantity > 0) {
-                    cart[id] = { name, price, quantity };
-                } else {
-                    delete cart[id];
-                }
-                renderCart();
-            }
-
-            function renderCart() {
-                cartItemsContainer.innerHTML = '';
-                let totalPrice = 0;
-
-                const productIds = Object.keys(cart);
-
-                if (productIds.length === 0) {
-                    cartItemsContainer.innerHTML = '<p class="text-gray-500">Nenhum produto adicionado.</p>';
-                    registerSaleBtn.disabled = true;
-                } else {
-                    productIds.forEach(id => {
-                        const item = cart[id];
-                        const itemEl = document.createElement('div');
-                        itemEl.className = 'flex justify-between text-gray-700';
-                        itemEl.innerHTML = `
-                            <span>${item.quantity}x ${item.name}</span>
-                            <span>R$ ${(item.price * item.quantity).toFixed(2)}</span>
-                        `;
-                        cartItemsContainer.appendChild(itemEl);
-                        totalPrice += item.price * item.quantity;
-                    });
-                    registerSaleBtn.disabled = false;
-                }
-
-                totalPriceEl.textContent = `R$ ${totalPrice.toFixed(2)}`;
-            }
-
-            registerSaleBtn.addEventListener('click', async () => {
-                const saleDate = dateInput.value;
-                const totalValue = parseFloat(totalPriceEl.textContent.replace('R$ ', '').replace(',', '.'));
-
-                if (Object.keys(cart).length === 0) {
-                    alert('Adicione pelo menos um produto para registrar a venda.');
-                    return;
-                }
-
-                // Prepara os dados para enviar ao backend
-                const saleData = {
-                    date: saleDate,
-                    total: totalValue,
-                    cart: cart // O objeto 'cart' que você já tem
-                };
-
-                try {
-                    const response = await fetch('/sales/sale_register', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(saleData)
-                    });
-
-                    const result = await response.json();
-
-                    if (response.ok) {
-                        alert('Venda registrada com sucesso!');
-                        window.location.reload();
-                    } else {
-                        alert(`Erro ao registrar a venda: ${result.message}`);
-                    }
-
-                } catch (error) {
-                    console.error('Erro na requisição:', error);
-                    alert('Ocorreu um erro de comunicação com o servidor.');
-                }
-            });
-
-            function resetPage() {
-                cart = {};
-                document.querySelectorAll('.quantity').forEach(q => q.textContent = '0');
-                renderCart();
-                // Recarrega a página para ver o estoque atualizado
-                window.location.reload();
-            }
-
-            function resetPage() {
-                cart = {};
-                document.querySelectorAll('.quantity').forEach(q => q.textContent = '0');
-                renderCart();
-            }
-
-        });
-    </script>
 </body>
+<script src="{{url_for('static', filename='script/script_sales_page.js') }}"></script>
+
 
 </html>

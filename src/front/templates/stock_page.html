@@ -33,6 +33,7 @@
             opacity: 0;
             transform: translateY(20px);
         }
+
         to {
             opacity: 1;
             transform: translateY(0);
@@ -42,7 +43,7 @@
     .animate-slide-up {
         animation: slideUp 0.4s ease-out;
     }
-    
+
     /* Estilização customizada para a tabela e seus componentes */
     .dt-container {
         color: #9ca3af;
@@ -58,12 +59,12 @@
         border-bottom: 1px solid #374151;
         transition: background-color 0.2s ease-in-out;
     }
-    
+
     #tabelaProdutos tbody tr:hover td {
         background-color: #374151;
         color: #f9fafb;
     }
-    
+
     .dt-search input,
     .dt-length select {
         background-color: #374151 !important;
@@ -73,13 +74,13 @@
         padding: 0.5rem 1rem;
         transition: border-color 0.2s, box-shadow 0.2s;
     }
-    
+
     .dt-search input:focus {
         outline: none !important;
         border-color: #3b82f6 !important;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
     }
-    
+
     .dt-paging .dt-paging-button {
         color: #d1d5db !important;
         border-radius: 0.375rem !important;
@@ -92,7 +93,7 @@
         border: 1px solid #3b82f6 !important;
         color: white !important;
     }
-    
+
     .dt-paging .dt-paging-button.current {
         background: #2563eb !important;
         border: 1px solid #2563eb !important;
@@ -404,9 +405,9 @@
                 {
                     data: 'preco_venda',
                     render: function (data) {
-                        return new Intl.NumberFormat('pt-BR', { 
-                            style: 'currency', 
-                            currency: 'BRL' 
+                        return new Intl.NumberFormat('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL'
                         }).format(data);
                     }
                 },
