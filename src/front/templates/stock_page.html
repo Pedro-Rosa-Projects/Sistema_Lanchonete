@@ -24,6 +24,25 @@
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.tailwindcss.js"></script>
 </head>
 
+
+<style>
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-slide-up {
+        animation: slideUp 0.4s ease-out;
+    }
+</style>
+
 <body class="bg-gray-900 text-gray-200 font-sans">
 
     <div class="container mx-auto p-4 md:p-8">
@@ -277,8 +296,7 @@
                         <div class="bg-gray-800 px-6 py-5 space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-300">Produto</label>
-                                <select
-                                    name="id_produto"
+                                <select name="id_produto"
                                     class="mt-1 w-full rounded-lg border border-gray-600 bg-gray-900 px-3 py-2 text-sm text-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 outline-none"
                                     required>
                                     <option value="">Selecione...</option>
@@ -327,11 +345,22 @@
         </dialog>
     </el-dialog>
 
-
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div id="toast-container" class="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 space-y-2">
+        {% for category, message in messages %}
+        <div class="px-4 py-3 rounded-lg shadow-lg text-white animate-slide-up
+          {% if category == 'success' %} bg-green-600 
+          {% elif category == 'error' %} bg-red-600 
+          {% else %} bg-gray-700 {% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
 
 </body>
-
-
 
 </html>
 
@@ -377,4 +406,11 @@
             ]
         });
     });
+
+    setTimeout(() => {
+        const toast = document.getElementById("toast-container");
+        if (toast) {
+            toast.remove();
+        }
+    }, 5000);
 </script>

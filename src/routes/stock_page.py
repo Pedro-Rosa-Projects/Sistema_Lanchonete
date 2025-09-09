@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, render_template, jsonify, request
+from flask import Flask, Blueprint, render_template, jsonify, request, flash, redirect, url_for
 from supabase import create_client, Client
 import os
 from dotenv import load_dotenv
@@ -50,12 +50,9 @@ def buscar_estoque():
 @stock_page.route('/stock/add_in_stock', methods=['POST'])
 def adicionar_no_estoque():
     try:
-        if request.method == 'POST':
-            id_produto = request.form['id_produto']
-            qtd_comprada = request.form['qtd_comprada']
-            preco_compra = request.form['preco_compra']
-        else:
-            return "Não é POST!"
+        id_produto = request.form['id_produto']
+        qtd_comprada = request.form['qtd_comprada']
+        preco_compra = request.form['preco_compra']
         
         response = supabase.table('produto').select('id, nome, qtd_estoque').eq("id", id_produto).execute()
         data = response.data
@@ -64,9 +61,13 @@ def adicionar_no_estoque():
         novo_estoque = estoque_atual + int(qtd_comprada)
 
         supabase.table('produto').update({'qtd_estoque': novo_estoque}).eq('id', int(id_produto)).execute()
-        return f"Atualizado com sucesso!"
-    except Exception as e:
-        return f"Erro!"
 
+        flash("✅ Produto adicionado ao estoque com sucesso!", "success")
+
+        return redirect(url_for('stock_page.pagina_principal'))
+    
+    except Exception as e:
+        flash("Erro ao adicionar no estoque!")
+        return redirect(url_for('stock_page.pagina_principal'))
     
 

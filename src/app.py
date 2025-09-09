@@ -10,6 +10,8 @@ def create_app():
         __name__, template_folder="front/templates", static_folder="front/statics"
     )
 
+    app.secret_key = "um_segredo_seguro_aqui"
+
     app.register_blueprint(index_page)
     app.register_blueprint(budget_page)
     app.register_blueprint(stock_page)
